@@ -350,7 +350,7 @@
       <Project>{ae75f0a1-66d3-4b3e-ae60-b4911e8b8e6a}</Project>
       <Name>Todo.DataAccess</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Todo.Entities\Todo.Entities.csproj">
+    <ProjectReference Include="..\..\Todo.Entities\Todo.Entities.csproj">
       <Project>{bcac6317-e99c-434f-8336-ccff226bfd48}</Project>
       <Name>Todo.Entities</Name>
     </ProjectReference>
