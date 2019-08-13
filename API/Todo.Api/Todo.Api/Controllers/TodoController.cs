@@ -86,6 +86,12 @@ namespace Todo.Api.Controllers
         [Route("get-single-todo")]
         public HttpResponseMessage GetTodoById(int id)
         {
+            if (id == 0)
+            {
+                var exception = new Exception("Please provide a valid todo id");
+                logger.Log(LogLevel.Error, exception);
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, exception);
+            }
             var todo = _todoDal.GetById(id);
             HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK, todo);
             return response;
