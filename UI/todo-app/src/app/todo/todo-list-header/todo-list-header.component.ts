@@ -1,5 +1,6 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { TodoDTO } from '../todo';
+import { AuthenticationService } from '../../core/authentication.service';
 
 @Component({
   selector: 'todo-list-header',
@@ -8,7 +9,7 @@ import { TodoDTO } from '../todo';
 })
 export class TodoListHeaderComponent implements OnInit {
 
-  constructor() { }
+  constructor(private authService: AuthenticationService) { }
 
   ngOnInit() {
   }
@@ -21,5 +22,9 @@ export class TodoListHeaderComponent implements OnInit {
   addTodo() {
     this.add.emit(this.newTodo);
     this.newTodo = new TodoDTO();
+  }
+
+  logout(){
+    this.authService.logout();
   }
 }

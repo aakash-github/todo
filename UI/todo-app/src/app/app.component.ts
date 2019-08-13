@@ -1,6 +1,4 @@
 import { Component } from '@angular/core';
-import { TodoDTO } from './todo/todo';
-import { TodoRepoService } from './todo/todo-repo.service';
 
 @Component({
   selector: 'todo-root',

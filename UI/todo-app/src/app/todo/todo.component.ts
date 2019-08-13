@@ -1,6 +1,7 @@
 import { TodoRepoService } from './todo-repo.service';
 import { Component, OnInit } from '@angular/core';
 import { TodoDTO } from './todo';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'todo-todo',
@@ -9,7 +10,7 @@ import { TodoDTO } from './todo';
 })
 export class TodoComponent implements OnInit {
 
-  constructor(private todoDataService: TodoRepoService) {
+  constructor(private todoDataService: TodoRepoService, private snackBar: MatSnackBar) {
   }
 
   todos: TodoDTO[];
@@ -32,6 +33,7 @@ export class TodoComponent implements OnInit {
           this.todoDataService.getTodoById(newTodoId).subscribe(
             (todo: TodoDTO) => {
               this.todos.push(todo);
+              this.snackBar.open("Todo added");
             });
         }
       );
@@ -42,6 +44,7 @@ export class TodoComponent implements OnInit {
       .toggleTodoComplete(todo)
       .subscribe(
         () => {
+          this.snackBar.open(`Todo ${todo.Complete ? 'marked completed': 'marked active'}`);
           this.todoDataService.getTodoById(todo.Id).subscribe(
             (updatedTodo: TodoDTO) => {
               todo = updatedTodo;
@@ -56,6 +59,7 @@ export class TodoComponent implements OnInit {
       .deleteTodoById(todo.Id)
       .subscribe(
         () => {
+          this.snackBar.open("Todo removed");
           this.todos = this.todos.filter((t) => t.Id !== todo.Id);
         }
       );

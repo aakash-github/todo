@@ -1,23 +1,16 @@
 <mat-toolbar color="primary">
-    <span class="fill-remaining-space">My Reactive Form with Material</span>
+    <span class="fill-remaining-space">Register to todo app</span>
   </mat-toolbar>
   
   <div class="container" *ngIf="!post; else forminfo" novalidate> 
     <form [formGroup]="formGroup" (ngSubmit)="onSubmit(formGroup.value)" class="form">
   
       <mat-form-field class="form-element">
-        <input matInput placeholder="Emailaddress" formControlName="email">
+        <input matInput placeholder="Email address" formControlName="email">
         <mat-error *ngIf="!formGroup.controls['email'].valid && formGroup.controls['email'].touched">
           {{ getErrorEmail() }}
         </mat-error>
-      </mat-form-field>
-  
-      <mat-form-field class="form-element">
-        <input matInput placeholder="Name" formControlName="name">
-        <mat-error *ngIf="!name.valid && name.touched">
-          {{ titleAlert }}
-        </mat-error>
-      </mat-form-field>
+      </mat-form-field> 
   
       <mat-form-field class="form-element">
         <input matInput placeholder="Password" formControlName="password">
@@ -26,10 +19,16 @@
           {{ getErrorPassword() }}
         </mat-error>
       </mat-form-field>
-  
+
+      <mat-form-field class="form-element">
+        <input matInput placeholder="Confirm password" formControlName="confirm">
+        <mat-error *ngIf="!formGroup.controls['confirm'].valid && formGroup.controls['confirm'].touched">
+          {{ getErrorConfirmPassword() }}
+        </mat-error>
+      </mat-form-field>
   
       <div class="form-element">
-        <button mat-raised-button color="primary" type="submit" class="button" [disabled]="!formGroup.valid">Login</button>
+        <button mat-raised-button color="primary" type="submit" class="button" [disabled]="!formGroup.valid">Register</button>
       </div>
   
     </form>
