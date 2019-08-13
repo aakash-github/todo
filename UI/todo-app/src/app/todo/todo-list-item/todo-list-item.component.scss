@@ -1,0 +1,15 @@
+.completed{
+    text-decoration: line-through; 
+}
+
+.todo-wrap{
+    padding: 10px;
+}
+
+.delete-todo{
+    float: right;
+    position: relative;
+    top: 2px;
+    color: #9b0606;
+    cursor: pointer;
+}

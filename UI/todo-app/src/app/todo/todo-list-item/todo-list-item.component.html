@@ -1,0 +1,12 @@
+<div class="view">
+  <!-- [class.completed]="todo.complete" -->
+
+  <mat-card class="todo-wrap">
+    <mat-checkbox [ngClass]="{'completed': todo.Complete}" (change)="toggleTodoComplete(todo)" [checked]="todo.Complete">
+        <span>{{todo.Title}}</span>
+      </mat-checkbox>
+      <i class="material-icons delete-todo" (click)="removeTodo(todo)">
+          clear
+          </i>
+  </mat-card>
+</div>

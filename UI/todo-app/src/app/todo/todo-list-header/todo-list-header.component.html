@@ -1,0 +1,8 @@
+<mat-toolbar color="primary">
+  <span class="fill-remaining-space">Welcome to Todo App</span>
+</mat-toolbar>
+<div class="container">
+  <mat-form-field class="form-element">
+      <input matInput [(ngModel)]="newTodo.title" placeholder="Add todo and press enter" (keyup.enter)="addTodo()">
+  </mat-form-field>
+</div>
