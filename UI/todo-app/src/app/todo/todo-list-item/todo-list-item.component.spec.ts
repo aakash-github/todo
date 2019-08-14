@@ -1,10 +1,7 @@
-import { AppModule } from './../../app.module';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { TodoListItemComponent } from './todo-list-item.component';
 import { TodoDTO } from '../todo';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatProgressSpinnerModule } from '@angular/material';
 import { MaterialUiModule } from '../../core/material-ui.module';
 import { RouterModule } from '@angular/router';
 

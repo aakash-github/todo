@@ -1,6 +1,5 @@
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { TodoListHeaderComponent } from './todo-list-header.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialUiModule } from '../../core/material-ui.module';

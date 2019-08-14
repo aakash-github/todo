@@ -1,7 +1,6 @@
 import { RouterTestingModule } from '@angular/router/testing';
-import { HttpClient } from '@angular/common/http';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MockBackend } from '@angular/http/testing'
+import { HttpClientTestingModule } from '@angular/common/http/testing'
 import { TodoComponent } from './todo.component';
 import { TodoListComponent } from './todo-list/todo-list.component';
 import { TodoListFooterComponent } from './todo-list-footer/todo-list-footer.component';
@@ -20,15 +19,15 @@ import { TodoDTO } from './todo';
 
 class MockTodoRepoService {
   addTodo(todo: TodoDTO): Observable<any> {
-    return Observable.of(1);
+    return Observable.of(todo.Id);
   }
 
   deleteTodoById(id: number): Observable<any> {
-    return Observable.of();
+    return Observable.of(true);
   }
 
   updateTodo(todo: TodoDTO): Observable<any> {
-    return Observable.of();
+    return Observable.of(todo);
   }
 
   getAllTodos(): Observable<any> {
@@ -36,11 +35,14 @@ class MockTodoRepoService {
   }
 
   getTodoById(id: number): Observable<any> {
-    return Observable.of(new TodoDTO());
+    var newTodo = new TodoDTO();
+    newTodo.Id = id;
+    return Observable.of(newTodo);
   }
 
   toggleTodoComplete(todo: TodoDTO) {
-    return Observable.of();
+    todo.Complete = !todo.Complete;
+    return Observable.of(todo);
   }
 }
 
@@ -64,12 +66,12 @@ describe('TodoComponent', () => {
         ReactiveFormsModule,
         BrowserAnimationsModule,
         MaterialUiModule,
-        RouterTestingModule
+        RouterTestingModule, 
+        HttpClientTestingModule
       ],
       providers: [{ provide: TodoRepoService, useClass: MockTodoRepoService },
       { provide: MatSnackBar, useClass: MockMatSnackBar },
         AuthenticationService,
-      { provide: HttpClient, deps: [MockBackend] },
       {
         provide: Router,
         useClass: class { navigate = jasmine.createSpy("navigate"); }
@@ -81,10 +83,56 @@ describe('TodoComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TodoComponent);
     component = fixture.componentInstance;
+    mocktodoRepoService = TestBed.get(TodoRepoService);
+    mockMatSnackBar = TestBed.get(MatSnackBar);
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should call getAllTodos on ngOnInit and set todos', () => {
+    spyOn(mocktodoRepoService, 'getAllTodos').and.callThrough();
+    component.ngOnInit();
+    expect(mocktodoRepoService.getAllTodos).toHaveBeenCalled();
+    expect(component.todos.length).toEqual(2);
+  });
+
+  it('should addTodo, fetch todo back and show snackBar on onAddTodo()', () => {
+    spyOn(mocktodoRepoService, 'addTodo').and.callThrough();
+    spyOn(mockMatSnackBar, 'open').and.callThrough();
+    spyOn(mocktodoRepoService, 'getTodoById').and.callThrough();
+    component.todos = [];
+    component.onAddTodo(new TodoDTO({Id : 1}));
+
+    expect(mocktodoRepoService.addTodo).toHaveBeenCalled();
+    expect(mocktodoRepoService.getTodoById).toHaveBeenCalled();
+    expect(mockMatSnackBar.open).toHaveBeenCalledWith("Todo added");
+    expect(component.todos.length).toEqual(1);
+    expect(component.todos[0].Id).toEqual(1);
+  });
+
+  it('should change complete status on onToggleTodoComplete() call', () => {
+    spyOn(mocktodoRepoService, 'toggleTodoComplete').and.callThrough();
+    spyOn(mockMatSnackBar, 'open').and.callThrough();
+    spyOn(mocktodoRepoService, 'getTodoById').and.callThrough();
+    component.onToggleTodoComplete(new TodoDTO({Id : 1, Complete: true}));
+
+    expect(mocktodoRepoService.toggleTodoComplete).toHaveBeenCalled();
+    expect(mocktodoRepoService.getTodoById).toHaveBeenCalled();
+    expect(mockMatSnackBar.open).toHaveBeenCalled();
+  });
+
+  it('Should delete the passed todo on calling deleteTodoById', () => {
+    spyOn(mocktodoRepoService, 'deleteTodoById').and.callThrough();
+    spyOn(mockMatSnackBar, 'open').and.callThrough();
+
+    component.todos = [new TodoDTO({Id : 1}), new TodoDTO({Id : 2})];
+    component.onRemoveTodo(component.todos[0]);
+
+    expect(mocktodoRepoService.deleteTodoById).toHaveBeenCalled();
+    expect(mockMatSnackBar.open).toHaveBeenCalledWith("Todo removed");
+    expect(component.todos.length).toEqual(1);
   });
 });

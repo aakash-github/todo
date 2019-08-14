@@ -1,70 +1,109 @@
 import {TestBed, async, inject} from '@angular/core/testing';
-import {TodoDTO} from './todo';
 import {TodoRepoService} from './todo-repo.service';
+import { HttpTestingController, HttpClientTestingModule } from '@angular/common/http/testing';
+import { TodoDTO } from './todo';
+import { environment } from '../../environments/environment.prod';
 
-xdescribe('TodoDataService', () => {
+describe('TodoDataService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [TodoRepoService]
     });
   });
 
-  xit('should ...', inject([TodoRepoService], (service: TodoRepoService) => {
-    expect(service).toBeTruthy();
-  }));
+  let service: TodoRepoService;
+  let httpMock: HttpTestingController;
 
-  // xdescribe('#getAllTodos()', () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [TodoRepoService]
+    });
+    service = TestBed.get(TodoRepoService);
+    httpMock = TestBed.get(HttpTestingController);
+  });
 
-  //   it('should return an empty array by default', inject([TodoRepoService], (service: TodoRepoService) => {
-  //     expect(service.getAllTodos()).toEqual([]);
-  //   }));
+  afterEach(() => {
+    //Make sure no request pending
+    httpMock.verify();
+  });
 
-  //   it('should return all todos', inject([TodoRepoService], (service: TodoRepoService) => {
-  //     let todo1 = new TodoDTO({title: 'Hello 1', complete: false});
-  //     let todo2 = new TodoDTO({title: 'Hello 2', complete: true});
-  //     service.addTodo(todo1);
-  //     service.addTodo(todo2);
-  //     expect(service.getAllTodos()).toEqual([todo1, todo2]);
-  //   }));
+  it('addTodo should return new todo id', () => {
+    const returnedTodoId = 1;
 
-  // });
+    let newTodo = new TodoDTO();
+    service.addTodo(newTodo).subscribe(returnedTodoId => {
+      expect(returnedTodoId).toBe(1);
+    });
 
-  // xdescribe('#save(todo)', () => {
+    const req = httpMock.expectOne(`${environment.apiUrl}add-todo`);
+    expect(req.request.method).toBe("POST");
+    req.flush(1);
+  });
 
-  //   it('should automatically assign an incrementing id', inject([TodoRepoService], (service: TodoRepoService) => {
-  //     let todo1 = new TodoDTO({title: 'Hello 1', complete: false});
-  //     let todo2 = new TodoDTO({title: 'Hello 2', complete: true});
-  //     service.addTodo(todo1);
-  //     service.addTodo(todo2);
-  //     expect(service.getTodoById(1)).toEqual(todo1);
-  //     expect(service.getTodoById(2)).toEqual(todo2);
-  //   }));
+  it('getAllTodos return list of todo object', () => {
+;
+    let todoList = [
+      new TodoDTO({Id: 1, Title: "First todo"}),
+      new TodoDTO({Id: 2, Title: "Second todo"})
+    ]
 
-  // });
+    service.getAllTodos().subscribe(todoList => {
+      expect(todoList).toBe(todoList);
+    });
 
-  // describe('#deleteTodoById(id)', () => {
+    const req = httpMock.expectOne(`${environment.apiUrl}get-all-todo`);
+    expect(req.request.method).toBe("GET");
+    req.flush(todoList);
+  });
 
-  //   it('should remove todo with the corresponding id', inject([TodoRepoService], (service: TodoRepoService) => {
-  //     let todo1 = new TodoDTO({title: 'Hello 1', complete: false});
-  //     let todo2 = new TodoDTO({title: 'Hello 2', complete: true});
-  //     service.addTodo(todo1);
-  //     service.addTodo(todo2);
-  //     expect(service.getAllTodos()).toEqual([todo1, todo2]);
-  //     service.deleteTodoById(1);
-  //     expect(service.getAllTodos()).toEqual([todo2]);
-  //     service.deleteTodoById(2);
-  //     expect(service.getAllTodos()).toEqual([]);
-  //   }));
+  it('getTodoById should return single todo for id', () => {
 
-  //   it('should not removing anything if todo with corresponding id is not found', inject([TodoRepoService], (service: TodoRepoService) => {
-  //     let todo1 = new TodoDTO({title: 'Hello 1', complete: false});
-  //     let todo2 = new TodoDTO({title: 'Hello 2', complete: true});
-  //     service.addTodo(todo1);
-  //     service.addTodo(todo2);
-  //     expect(service.getAllTodos()).toEqual([todo1, todo2]);
-  //     service.deleteTodoById(3);
-  //     expect(service.getAllTodos()).toEqual([todo1, todo2]);
-  //   }));
+    let newTodo = new TodoDTO({ Id : 1, Title : "First todo"});
+    service.getTodoById(newTodo.Id).subscribe(newTodo => {
+      expect(newTodo).toBe(newTodo);
+    });
 
-  // });
+    const req = httpMock.expectOne(`${environment.apiUrl}get-single-todo?id=${newTodo.Id}`);
+    expect(req.request.method).toBe("GET");
+    req.flush(newTodo);
+  });
+
+  it('deleteTodoById should delete the todo for givin id', () => {
+
+    let id = 1
+    service.deleteTodoById(id).subscribe(returnedTodoId => {
+      expect(returnedTodoId).toBe(null);
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}delete-todo?id=${id}`);
+    expect(req.request.method).toBe("DELETE");
+    req.flush(null);
+  });
+
+  it('updateTodo should update the todo', () => {
+
+    let newTodo = new TodoDTO();
+    service.updateTodo(newTodo).subscribe(returnedTodoId => {
+      expect(returnedTodoId).toBe(null);
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}update-todo`);
+    expect(req.request.method).toBe("PUT");
+    req.flush(null);
+  });
+
+
+  it('toggleTodoComplete should update todo status', () => {
+
+    let newTodo = new TodoDTO();
+    service.toggleTodoComplete(newTodo).subscribe(returnedTodoId => {
+      expect(returnedTodoId).toBe(null);
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}update-todo`);
+    expect(req.request.method).toBe("PUT");
+    req.flush(null);
+  });
+
 });
