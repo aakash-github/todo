@@ -1,16 +1,16 @@
 import {TodoDTO} from './todo';
 
-describe('Todo', () => {
+describe('Todo DTO', () => {
   it('should create an instance', () => {
     expect(new TodoDTO()).toBeTruthy();
   });
 
   it('should accept values in the constructor', () => {
     let todo = new TodoDTO({
-      title: 'hello',
-      complete: true
+      Title: 'First todo',
+      Complete: true
     });
-    expect(todo.Title).toEqual('hello');
+    expect(todo.Title).toEqual('First todo');
     expect(todo.Complete).toEqual(true);
   });
 });

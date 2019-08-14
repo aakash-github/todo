@@ -5,8 +5,10 @@ import { TodoListItemComponent } from './todo-list-item.component';
 import { TodoDTO } from '../todo';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material';
+import { MaterialUiModule } from '../../core/material-ui.module';
+import { RouterModule } from '@angular/router';
 
-fdescribe('TodoListItemComponent', () => {
+describe('TodoListItemComponent', () => {
   let component: TodoListItemComponent;
   let fixture: ComponentFixture<TodoListItemComponent>;
 
@@ -16,8 +18,9 @@ fdescribe('TodoListItemComponent', () => {
       imports: [
         FormsModule,
         ReactiveFormsModule,
-        MatProgressSpinnerModule
-      ],
+        MaterialUiModule, 
+        RouterModule
+      ]
     })
     .compileComponents();
   }));
@@ -25,6 +28,7 @@ fdescribe('TodoListItemComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TodoListItemComponent);
     component = fixture.componentInstance;
+    component.todo =  new TodoDTO();
     fixture.detectChanges();
   });
 
@@ -33,11 +37,17 @@ fdescribe('TodoListItemComponent', () => {
   });
 
   it('should emit todo on Toggle Complete', () => {
-    const todo=new TodoDTO();
+    const todo= new TodoDTO();
     spyOn(component.toggleComplete, 'emit');
     component.toggleTodoComplete(todo);
-    expect(component.toggleComplete.emit).toHaveBeenCalledWith(true);
+    expect(component.toggleComplete.emit).toHaveBeenCalledWith(todo);
   });
 
+  it('should remove todo on Toggle Complete', () => {
+    const todo= new TodoDTO();
+    spyOn(component.remove, 'emit');
+    component.removeTodo(todo);
+    expect(component.remove.emit).toHaveBeenCalledWith(todo);
+  });
 
 });
